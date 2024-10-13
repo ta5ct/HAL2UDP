@@ -20,33 +20,35 @@
  *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/*    Hardware:
- *
+/*    Hardware: lolin 32 lite 
+ * --------------w5500------------------
+ *            GPIO 5 ---> SCS
+ *            GPIO 18 --> SCLK
+ *            GPIO 19 --> MISO
+ *            GPIO 23 --> MOSI
  *           3v3 -- 3.3v W5500
  *           GND -- GND  W5500
  *           GND -- (DB15- 7)
  *           GND -- (DB15- 8)
- * 
- *       GPIO  1 -> OUT-03 or PWM-03
- *       GPIO  2 -> OUT-00 or PWM-00  -[100R]-(DB15 - 9) & onboard blue LED
- *       GPIO  4 -> OUT-01 or PWM-01  -[100R]-(DB15 -10)
- *       GPIO  5 -> W5500 SCS
- *       GPIO 12 -> step-0            -[100R]-(DB15 - 1)
- *       GPIO 13 -> dir-0             -[100R]-(DB15 - 2)
- *       GPIO 14 -> OUT-04 or PWM-04
- *       GPIO 15 -> OUT-05 or PWM-05
+ * --------------------------------------
+ * -------AXIS SETUP---------------------
+ *       GPIO 12 -> step-0            -[100R]-(DB15 - 1)       
+ *       GPIO 13 -> dir -0             [100R]- (DB15-2) 
  * (RX2) GPIO 16 -> step-1            -[100R]-(DB15 - 3)
  * (TX2) GPIO 17 -> dir-1             -[100R]-(DB15 - 4)
- *       GPIO 18 -> W5500 SCLK
- *       GPIO 19 <- W5500 MISO
  *       GPIO 21 -> step-2            -[100R]-(DB15 - 5)
- *       GPIO 22 -> dir-2             -[100R]-(DB15 - 6)
- *       GPIO 23 -> W5500 MOSI
+ *       GPIO 15 -> dir-2             -[100R]-(DB15 - 6)
+ *
+ *       GPIO  0 -> OUT-03 or PWM-03
+ *       GPIO  2 -> OUT-00 or PWM-00  -[100R]-(DB15 - 9) & onboard blue LED
+ *       GPIO  4 -> OUT-01 or PWM-01  -[100R]-(DB15 -10)
+ *       
+ *       GPIO 14 -> OUT-04 or PWM-04  -[100R]-(DB15-8)
  *       GPIO 25 -> OUT-02 or PWM-02  -[100R]-(DB15 -11)
  *       GPIO 26 <- IN-00 {pullup}    -[100R]-(DB15 -12)
  *       GPIO 27 <- IN-01 {pullup}    -[100R]-(DB15 -13)
  *       GPIO 32 <- IN-02 {pullup}    -[100R]-(DB15 -14)
- *       GPIO 33 <- IN-03 {pullup}    -[100R]-(DB15 -15)
+ *  
  *       GPIO 34 <- IN-04 {no pullup!}
  *       GPIO 35 <- IN-05 {no pullup!}
  *  (VP) GPIO 36 <- IN-06 {no pullup!}
@@ -123,7 +125,7 @@ unsigned int port = 58427;
 #define STEP_2_PIN 21
 #define STEP_2_H REG_WRITE(GPIO_OUT_W1TS_REG, BIT21)
 #define STEP_2_L REG_WRITE(GPIO_OUT_W1TC_REG, BIT21)
-#define DIR_2_PIN 22
+#define DIR_2_PIN 15
 #define DIR_2_H REG_WRITE(GPIO_OUT_W1TS_REG, BIT22)
 #define DIR_2_L REG_WRITE(GPIO_OUT_W1TC_REG, BIT22)
 
@@ -138,15 +140,15 @@ unsigned int port = 58427;
 #define OUT_02_PIN 25
 #define OUT_02_H REG_WRITE(GPIO_OUT_W1TS_REG, BIT25)
 #define OUT_02_L REG_WRITE(GPIO_OUT_W1TC_REG, BIT25)
-#define OUT_03_PIN 1
-#define OUT_03_H REG_WRITE(GPIO_OUT_W1TS_REG, BIT1)
-#define OUT_03_L REG_WRITE(GPIO_OUT_W1TC_REG, BIT1)
+//#define OUT_03_PIN 1
+//#define OUT_03_H REG_WRITE(GPIO_OUT_W1TS_REG, BIT1)
+//#define OUT_03_L REG_WRITE(GPIO_OUT_W1TC_REG, BIT1)
 #define OUT_04_PIN 14
 #define OUT_04_H REG_WRITE(GPIO_OUT_W1TS_REG, BIT14)
 #define OUT_04_L REG_WRITE(GPIO_OUT_W1TC_REG, BIT14)
-#define OUT_05_PIN 15
-#define OUT_05_H REG_WRITE(GPIO_OUT_W1TS_REG, BIT15)
-#define OUT_05_L REG_WRITE(GPIO_OUT_W1TC_REG, BIT15)
+//#define OUT_05_PIN 15
+//#define OUT_05_H REG_WRITE(GPIO_OUT_W1TS_REG, BIT15)
+//#define OUT_05_L REG_WRITE(GPIO_OUT_W1TC_REG, BIT15)
 
 /*==================================================================*/
 
@@ -156,12 +158,12 @@ unsigned int port = 58427;
 #define IN_01 REG_READ(GPIO_IN_REG) & BIT27 //27
 #define IN_02_PIN 32
 #define IN_02 REG_READ(GPIO_IN1_REG) & BIT0 //32 -32
-#define IN_03_PIN 33
-#define IN_03 REG_READ(GPIO_IN1_REG) & BIT1 //33 -32
+//#define IN_03_PIN 33
+//#define IN_03 REG_READ(GPIO_IN1_REG) & BIT1 //33 -32
 #define IN_04_PIN 34
 #define IN_04 REG_READ(GPIO_IN1_REG) & BIT2 //34 -32
-#define IN_05_PIN 35
-#define IN_05 REG_READ(GPIO_IN1_REG) & BIT3 //35 -32
+//#define IN_05_PIN 35
+//#define IN_05 REG_READ(GPIO_IN1_REG) & BIT3 //35 -32
 #define IN_06_PIN 36
 #define IN_06 REG_READ(GPIO_IN1_REG) & BIT4 //36 -32
 #define IN_07_PIN 39
@@ -221,8 +223,8 @@ volatile bool b_math[3] = { false, false, false };
 volatile bool b_dirSignal[3] = { LOW, LOW, LOW };
 volatile bool b_dirChange[3] = { false, false, false };
 
-const uint8_t pwm_pin[6] = { OUT_00_PIN, OUT_01_PIN, OUT_02_PIN, OUT_03_PIN, OUT_04_PIN, OUT_05_PIN };
-bool pwm_enable[6] = { false, false, false, false, false, false };
+const uint8_t pwm_pin[4] = { OUT_00_PIN, OUT_01_PIN, OUT_02_PIN, OUT_04_PIN };
+bool pwm_enable[4] = { false, false, false, false };
 
 /*==================================================================*/
 
@@ -443,7 +445,7 @@ void IRAM_ATTR outputHandler()
             OUT_02_L;
     }
 
-    if (pwm_enable[3]) {
+ /*  if (pwm_enable[3]) {
         if (enable) {
             if (last_pwm[3] != cmd.pwm[3]) {
                 last_pwm[3] = cmd.pwm[3];
@@ -459,7 +461,7 @@ void IRAM_ATTR outputHandler()
         else
             OUT_03_L;
     }
-
+*/
     if (pwm_enable[4]) {
         if (enable) {
             if (last_pwm[4] != cmd.pwm[4]) {
@@ -476,7 +478,7 @@ void IRAM_ATTR outputHandler()
         else
             OUT_04_L;
     }
-
+/*
     if (pwm_enable[5]) {
         if (enable) {
             if (last_pwm[5] != cmd.pwm[5]) {
@@ -492,7 +494,7 @@ void IRAM_ATTR outputHandler()
             (cmd.io & IO_05) ? OUT_05_H : OUT_05_L;
         else
             OUT_05_L;
-    }
+    } */
 }
 /*==================================================================*/
 void IRAM_ATTR inputHandler()
@@ -502,16 +504,16 @@ void IRAM_ATTR inputHandler()
         fb.io |= IO_01;
     if (IN_02)
         fb.io |= IO_02;
-    if (IN_03)
-        fb.io |= IO_03;
+ // if (IN_03)
+ //     fb.io |= IO_03;
     if (IN_04)
         fb.io |= IO_04;
-    if (IN_05)
+/*    if (IN_05)
         fb.io |= IO_05;
     if (IN_06)
         fb.io |= IO_06;
     if (IN_07)
-        fb.io |= IO_07;
+        fb.io |= IO_07; */
 }
 /*==================================================================*/
 void IRAM_ATTR commandHandler()
@@ -565,16 +567,16 @@ void IRAM_ATTR commandHandler()
                     } else if (i == 2) {
                         pinMode(OUT_02_PIN, OUTPUT);
                         digitalWrite(OUT_02_PIN, 0);
-                    } else if (i == 3) {
-                        pinMode(OUT_03_PIN, OUTPUT);
-                        digitalWrite(OUT_03_PIN, 0);
-                    } else if (i == 4) {
+                    } //else if (i == 3) {
+                      //  pinMode(OUT_03_PIN, OUTPUT);
+                      /*  digitalWrite(OUT_03_PIN, 0);
+                    } */else if (i == 4) {
                         pinMode(OUT_04_PIN, OUTPUT);
                         digitalWrite(OUT_04_PIN, 0);
-                    } else if (i == 5) {
+                    } /* else if (i == 5) {
                         pinMode(OUT_05_PIN, OUTPUT);
                         digitalWrite(OUT_05_PIN, 0);
-                    }
+                    }*/
                 }
             }
         }
@@ -639,12 +641,12 @@ void setup_Core0(void* parameter)
     pinMode(IN_00_PIN, INPUT_PULLUP);
     pinMode(IN_01_PIN, INPUT_PULLUP);
     pinMode(IN_02_PIN, INPUT_PULLUP);
-    pinMode(IN_03_PIN, INPUT_PULLUP);
+//    pinMode(IN_03_PIN, INPUT_PULLUP);
 
     pinMode(IN_04_PIN, INPUT);
-    pinMode(IN_05_PIN, INPUT);
+/*   pinMode(IN_05_PIN, INPUT);
     pinMode(IN_06_PIN, INPUT);
-    pinMode(IN_07_PIN, INPUT);
+    pinMode(IN_07_PIN, INPUT);*/
 
     delay(500);
     Ethernet.init(SPI_CS_PIN); /* You can use Ethernet.init(pin) to configure the CS pin */
