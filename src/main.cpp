@@ -443,8 +443,26 @@ void IRAM_ATTR outputHandler()
             (cmd.io & IO_02) ? OUT_02_H : OUT_02_L;
         else
             OUT_02_L;
-           }
-  /*  if (pwm_enable[4]) {
+    }
+
+ /*  if (pwm_enable[3]) {
+        if (enable) {
+            if (last_pwm[3] != cmd.pwm[3]) {
+                last_pwm[3] = cmd.pwm[3];
+                ledcWrite(6, last_pwm[3]);
+            }
+        } else {
+            ledcWrite(6, 0);
+            last_pwm[3] = 0;
+        }
+    } else {
+        if (enable)
+            (cmd.io & IO_03) ? OUT_03_H : OUT_03_L;
+        else
+            OUT_03_L;
+    }
+*/
+    if (pwm_enable[4]) {
         if (enable) {
             if (last_pwm[4] != cmd.pwm[4]) {
                 last_pwm[4] = cmd.pwm[4];
@@ -459,8 +477,24 @@ void IRAM_ATTR outputHandler()
             (cmd.io & IO_04) ? OUT_04_H : OUT_04_L;
         else
             OUT_04_L;
-        }    
-    */
+    }
+/*
+    if (pwm_enable[5]) {
+        if (enable) {
+            if (last_pwm[5] != cmd.pwm[5]) {
+                last_pwm[5] = cmd.pwm[5];
+                ledcWrite(10, last_pwm[5]);
+            }
+        } else {
+            ledcWrite(10, 0);
+            last_pwm[5] = 0;
+        }
+    } else {
+        if (enable)
+            (cmd.io & IO_05) ? OUT_05_H : OUT_05_L;
+        else
+            OUT_05_L;
+    } */
 }
 /*==================================================================*/
 void IRAM_ATTR inputHandler()
