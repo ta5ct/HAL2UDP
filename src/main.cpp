@@ -20,7 +20,7 @@
  *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/*    Hardware: lolin 32 lite 
+ /*    Hardware: lolin 32 lite 
  * --------------w5500------------------
  *            GPIO 5 ---> SCS
  *            GPIO 18 --> SCLK
@@ -180,11 +180,11 @@ unsigned int port = 58427;
 #define IO_00 0b00000001
 #define IO_01 0b00000010
 #define IO_02 0b00000100
-#define IO_03 0b00001000
-#define IO_04 0b00010000
-#define IO_05 0b00100000
-#define IO_06 0b01000000
-#define IO_07 0b10000000
+#define IO_04 0b00001000
+#define IO_06 0b00010000
+#define IO_07 0b00100000
+//#define IO_06 0b01000000
+//#define IO_07 0b10000000
 
 /*==================================================================*/
 
@@ -390,7 +390,7 @@ void IRAM_ATTR acceleration(const int i)
 /*==================================================================*/
 void IRAM_ATTR outputHandler()
 {
-    static int last_pwm[6] = { 0, 0, 0, 0, 0, 0 };
+    static int last_pwm[4] = { 0, 0, 0, 0 };
 
     bool enable = cmd.control & CTRL_ENABLE;
 
@@ -443,33 +443,15 @@ void IRAM_ATTR outputHandler()
             (cmd.io & IO_02) ? OUT_02_H : OUT_02_L;
         else
             OUT_02_L;
-    }
-
- /*  if (pwm_enable[3]) {
-        if (enable) {
-            if (last_pwm[3] != cmd.pwm[3]) {
-                last_pwm[3] = cmd.pwm[3];
-                ledcWrite(6, last_pwm[3]);
-            }
-        } else {
-            ledcWrite(6, 0);
-            last_pwm[3] = 0;
-        }
-    } else {
-        if (enable)
-            (cmd.io & IO_03) ? OUT_03_H : OUT_03_L;
-        else
-            OUT_03_L;
-    }
-*/
-    if (pwm_enable[4]) {
+           }
+  /*  if (pwm_enable[4]) {
         if (enable) {
             if (last_pwm[4] != cmd.pwm[4]) {
                 last_pwm[4] = cmd.pwm[4];
-                ledcWrite(8, last_pwm[4]);
+                ledcWrite(6, last_pwm[4]);
             }
         } else {
-            ledcWrite(8, 0);
+            ledcWrite(6, 0);
             last_pwm[4] = 0;
         }
     } else {
@@ -477,24 +459,8 @@ void IRAM_ATTR outputHandler()
             (cmd.io & IO_04) ? OUT_04_H : OUT_04_L;
         else
             OUT_04_L;
-    }
-/*
-    if (pwm_enable[5]) {
-        if (enable) {
-            if (last_pwm[5] != cmd.pwm[5]) {
-                last_pwm[5] = cmd.pwm[5];
-                ledcWrite(10, last_pwm[5]);
-            }
-        } else {
-            ledcWrite(10, 0);
-            last_pwm[5] = 0;
-        }
-    } else {
-        if (enable)
-            (cmd.io & IO_05) ? OUT_05_H : OUT_05_L;
-        else
-            OUT_05_L;
-    } */
+        }    
+    */
 }
 /*==================================================================*/
 void IRAM_ATTR inputHandler()
@@ -504,16 +470,8 @@ void IRAM_ATTR inputHandler()
         fb.io |= IO_01;
     if (IN_02)
         fb.io |= IO_02;
- // if (IN_03)
- //     fb.io |= IO_03;
     if (IN_04)
         fb.io |= IO_04;
-/*    if (IN_05)
-        fb.io |= IO_05;
-    if (IN_06)
-        fb.io |= IO_06;
-    if (IN_07)
-        fb.io |= IO_07; */
 }
 /*==================================================================*/
 void IRAM_ATTR commandHandler()
@@ -567,16 +525,10 @@ void IRAM_ATTR commandHandler()
                     } else if (i == 2) {
                         pinMode(OUT_02_PIN, OUTPUT);
                         digitalWrite(OUT_02_PIN, 0);
-                    } //else if (i == 3) {
-                      //  pinMode(OUT_03_PIN, OUTPUT);
-                      /*  digitalWrite(OUT_03_PIN, 0);
-                    } */else if (i == 4) {
+                    } else if (i == 4) {
                         pinMode(OUT_04_PIN, OUTPUT);
                         digitalWrite(OUT_04_PIN, 0);
-                    } /* else if (i == 5) {
-                        pinMode(OUT_05_PIN, OUTPUT);
-                        digitalWrite(OUT_05_PIN, 0);
-                    }*/
+                    }
                 }
             }
         }
